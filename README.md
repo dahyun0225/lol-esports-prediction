@@ -139,104 +139,93 @@ This achieved **24.177%** on the competition leaderboard.
 lol-esports-prediction/
 └── src/
     └── UpdatedMassiveNumber.R   # Full modeling pipeline
+```
 
-7. Run Instructions
+---
+
+## 7. Run Instructions
+
 Install required R packages:
+
+```r
 install.packages(c(
   "tidyverse", "pROC", "xgboost",
   "glmnet", "catboost", "lubridate"
 ))
-Place data files in the working directory:
+```
+
+Place data files in your working directory:
+
+```
 train.csv
 Xtr.csv
 Ytr.csv
 Xte.csv
+```
 
-Run:
+Run the full pipeline:
+
+```r
 source("src/UpdatedMassiveNumber.R")
+```
 
 Outputs:
+
+```
 BIGWIN_v2.csv
 BIGWIN_v8.csv
 BIGWIN_v10t.csv   (final submission)
+```
 
+---
 
-Why This Project Matters
+## Why This Project Matters
 
-League of Legends match prediction is much more than a game-related task.
+League of Legends match prediction is much more than a game-related task.  
 This project demonstrates practical, real-world machine learning skills used in modern data science roles.
 
-1. Realistic large-scale data complexity
-
-Professional LoL esports produces thousands of matches and tens of thousands of player–team–champion combinations.
+### 1. Realistic large-scale data complexity
+Professional LoL esports produces thousands of matches and tens of thousands of player–team–champion combinations.  
 This dataset behaves like real sports analytics or financial prediction data, with high dimensionality, temporal variation, and non-linear interactions.
 
-2. Full end-to-end ML pipeline
+### 2. Full end-to-end ML pipeline
+This project includes:
+- Binary classification (winner)
+- Regression (game length)
+- Multi-output regression (10 player kills)
+- Feature engineering
+- Categorical modeling
+- Temporal modeling & leakage prevention
+- Ensemble blending (Logistic + CatBoost + XGBoost + Ridge)
 
-This project covers every major ML component in one system:
+### 3. Modeling meta changes over time (meta drift)
+The model incorporates:
+- Year fraction  
+- Expected kills by season  
+- Expected match duration by season  
 
-Binary classification (winner)
+### 4. High-cardinality categorical modeling
+Players, teams, leagues, champions — hundreds of unique categorical values.  
+CatBoost and engineered aggregations capture player skill, team consistency, champion trends, and league differences.
 
-Regression (game length)
+### 5. Industrial relevance
+This pipeline mirrors systems used in:
+- Esports analytics companies  
+- Sports prediction platforms  
+- Betting probability engines  
+- Game analytics teams (including Riot Games)
 
-Multi-output regression (10 player kills)
+### 6. Time-aware feature construction (no leakage)
+Only matches prior to each test date were used to compute statistics.
 
-Feature engineering
-
-Categorical modeling
-
-Time-based modeling and leakage prevention
-
-Ensemble blending (Logistic + CatBoost + XGBoost + Ridge)
-
-3. Modeling meta changes over time (meta drift)
-
-League patches change champion balance, game tempo, kill frequency, and strategy every year.
-The model accounts for this using:
-
-Year fraction
-
-Expected kills by season
-
-Expected match duration by season
-
-4. High-cardinality categorical modeling
-
-Players, teams, leagues, champions — hundreds of unique categorical values.
-CatBoost and engineered aggregations capture:
-
-Player skill history
-
-Team performance consistency
-
-Champion pick/win trends
-
-League differences
-
-5. Industrial relevance
-
-This modeling structure is identical to what is used in:
-
-Esports analytics companies
-
-Sports prediction platforms
-
-Betting probability engines
-
-Game analytics teams (including Riot Games)
-
-6. Time-aware feature construction (no leakage)
-
-Only past matches before each test date were used.
-This ensures correct chronological separation and prevents future information from leaking into training.
-
-One-Sentence Summary
-
-A production-style machine learning system that handles temporal drift, high-cardinality data, structured feature engineering, and multi-task prediction—far beyond a simple game model.
-
-8. Author
-
-Dahyeon Choi
-Data Science, Simon Fraser University
-Oct 2025
 ---
+
+### **One-Sentence Summary**
+A production-style machine learning system designed to handle temporal drift, high-cardinality data, structured feature engineering, and multi-task prediction—far beyond a simple game model.
+
+---
+
+## 8. Author
+**Dahyeon Choi**  
+Data Science, Simon Fraser University  
+Oct 2025
