@@ -1,7 +1,7 @@
 # LoL Esports Prediction – MassiveNumber Model 
 
 <p align="center">
-  <img src="47aca76b-f395-45ce-8305-87261b5b2fb0.png" width="75%" />
+  <img src=["47aca76b-f395-45ce-8305-87261b5b2fb0.png" width="75%"](https://s.yimg.com/ny/api/res/1.2/OPl4FuXhtAK9MIf9mHMflQ--/YXBwaWQ9aGlnaGxhbmRlcjt3PTI0MDA7aD0xMzUwO2NmPXdlYnA-/https://s.yimg.com/os/creatr-uploaded-images/2022-12/12aec120-825f-11ed-a6f5-fd112bbd5f40) />
 </p>
 
 This project builds a full game-level prediction system for professional League of Legends (LoL) matches using historical player, team, champion, and league statistics.  
