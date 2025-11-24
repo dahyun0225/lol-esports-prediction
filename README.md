@@ -1,4 +1,8 @@
-# LoL Esports Prediction – MassiveNumber Model (STAT 440)
+# LoL Esports Prediction – MassiveNumber Model 
+
+<p align="center">
+  <img src="47aca76b-f395-45ce-8305-87261b5b2fb0.png" width="75%" />
+</p>
 
 This project builds a full game-level prediction system for professional League of Legends (LoL) matches using historical player, team, champion, and league statistics.  
 It was developed for the STAT 440 “Learning From Big Data” competition and achieved a leaderboard score of **24.177%**.
