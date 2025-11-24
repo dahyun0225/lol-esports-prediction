@@ -176,7 +176,71 @@ BIGWIN_v2.csv
 BIGWIN_v8.csv
 BIGWIN_v10t.csv (final submission)
 
-8. Author
+## Why This Project Matters
+
+League of Legends match prediction is much more than a game-related task.  
+This project demonstrates practical, real-world machine learning skills used in modern data science roles.
+
+### 1. Realistic large-scale data complexity
+Professional LoL esports produces thousands of matches and tens of thousands of player–team–champion combinations.  
+This dataset behaves like real sports analytics or financial prediction data, with high dimensionality, temporal variation, and non-linear interactions.
+
+### 2. Full end-to-end ML pipeline
+This project covers every major ML component in one system:
+- Binary classification (winner)
+- Regression (game length)
+- Multi-output regression (10 player kills)
+- Feature engineering
+- Categorical modeling
+- Time-based modeling and leakage prevention
+- Ensemble blending (logistic + CatBoost + XGBoost + Ridge)
+
+This mirrors actual industry-level machine learning workflows.
+
+### 3. Modeling meta changes over time (meta drift)
+League patches change champion balance, game tempo, kill frequency, and strategy every year.  
+To handle this, the model integrates:
+- Year fraction  
+- Expected kills by season  
+- Expected game length by season  
+
+This shows the ability to model **non-stationary data**, a core challenge in real-world ML systems such as finance, forecasting, and recommendations.
+
+### 4. High-cardinality categorical modeling
+Players, teams, leagues, champions — hundreds of unique categorical values.  
+CatBoost and engineered aggregations allow the model to capture:
+- Player skill history  
+- Team performance consistency  
+- Champion pick/win trends  
+- League differences  
+
+High-cardinality categorical modeling is essential in ecommerce, sports analytics, and personalization.
+
+### 5. Industrial relevance
+This modeling structure is the same as what is used in:
+- Esports analytics companies  
+- Sports prediction platforms  
+- Betting probability engines  
+- Game analytics teams (including Riot Games)
+
+The project demonstrates the ability to build **production-grade predictive systems** on real, evolving data.
+
+### 6. Correct time-aware feature construction (no leakage)
+Only past matches before each test date were used for historical statistics.  
+This ensures:
+- Proper chronological separation  
+- Realistic generalization  
+- No future information leakage  
+
+Leakage prevention is one of the most important skills in applied machine learning.
+
+---
+
+### **One-Sentence Summary**
+**This project is a fully engineered, production-style machine learning system that handles temporal drift, high-cardinality data, structured feature engineering, and multi-task prediction—far beyond a simple game model.**
+
+
+9. Author
 
 Dahyeon Choi
 Data Science, Simon Fraser University
