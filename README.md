@@ -27,8 +27,6 @@ Because the test set contained only match structure (teams, players, champions, 
 
 ## 2. Data Used
 
-The competition dataset included:
-
 ### **Train (player-level)**
 - `pid`, `tid`, `lid`
 - `position`, `champion`, `side`
@@ -38,126 +36,112 @@ The competition dataset included:
 - `result` (1 = win, 0 = loss)
 
 ### **Game-level design matrices**
-- `Xtr.csv` – game structure (teams, 10 players, 10 champions, league id, date)
-- `Ytr.csv` – game-level labels (winner, total kills, game length)
+- `Xtr.csv` – game structure (teams, 10 players, champions, league id, date)
+- `Ytr.csv` – game-level labels (winner, kills, game length)
 - `Xte.csv` – test set structure
 
 ---
 
-## 3. Feature Engineering
-
+## 3. Feature Engineering  
 All features were computed using **only matches prior to each test match** to avoid leakage.
 
 ### **3.1 Temporal Features**
-- Days since dataset start
-- Year, month, day of year
-- Meta-based expected game length  
-- Meta-based expected kill rate  
-  (captures changes in game pace over seasons)
+- Days since dataset start  
+- Year, month, day of year  
+- Expected game length by season  
+- Expected kill rate by season  
 
 ### **3.2 League-Level Stats**
-- average game length  
-- variance in game length  
-- average kills  
-- league competitiveness score (scaled)
-- league tier (5-level discretized)
+- Average game length  
+- Game length variance  
+- Average kills  
+- Competitiveness score  
+- Tier category (5 bins)
 
 ### **3.3 Team Stats**
-- team win rate  
-- team games played  
-(missing teams imputed with global averages)
+- Team win rate  
+- Team games played  
+- Missing teams → imputed with global averages  
 
 ### **3.4 Player Stats**
-Per-player historical averages:
-- kills, deaths, assists  
-- damage per minute, gold per minute  
-- win rate  
-- games played
+- K/D/A  
+- DPM, GPM  
+- Win rate  
+- Games played  
 
 ### **3.5 Champion Stats**
-- pick rate  
-- win rate  
-- kills / deaths / assists  
-- DPM / GPM averages
+- Pick rate  
+- Win rate  
+- K/D/A averages  
+- DPM, GPM averages  
 
 ### **3.6 Game-Level Aggregates**
-Computed for both teams:
-- average player win rate  
-- average player kill stats  
-- average champion win rate  
-- expected kills (player-based and champion-based)
+- Average player win rate per team  
+- Average champion win rate per team  
+- Expected kills (player-based + champion-based)  
 
 ### **3.7 Differential Features**
-Key predictors:
-- player winrate diff (Red − Blue)
-- team winrate diff
-- champion winrate diff
-- expected kills diff
+- winrate diff (Red − Blue)  
+- team winrate diff  
+- champion winrate diff  
+- expected kills diff  
 
 ---
 
 ## 4. Modeling
 
-The project uses **independent models for winner, length, and kills**, then ensembles them.
-
-### **4.1 Winner Prediction (Binary Classification)**
-
+### **4.1 Winner Prediction (Binary Classification)**  
 **Models**
-- Logistic Regression (glm) using numeric features  
-- CatBoost using categorical features (teams, players, champs, positions)
+- Logistic Regression (4 seeds)  
+- CatBoost (2 seeds)  
 
 **Ensemble**
-- 40% Logistic (4 random seeds)
-- 60% CatBoost (2 random seeds)
+- 40% Logistic  
+- 60% CatBoost  
 
 ---
 
 ### **4.2 Game Length Prediction (Regression)**
-
 **Models**
-- Ridge Regression (glmnet)
-- XGBoost Regression (reg:squarederror)
+- Ridge Regression  
+- XGBoost  
 
 **Ensemble**
-- Ridge + XGBoost (multiple seeds)
+- Ridge + XGBoost  
 
 ---
 
 ### **4.3 Player Kill Prediction (10 regressions)**
-
-For each player (1–5 Red, 1–5 Blue):
+For each of 10 players:
 
 **Models**
-- XGBoost (MSE)
-- XGBoost (Poisson)
-- Ridge
+- XGBoost (MSE)  
+- XGBoost (Poisson)  
+- Ridge Regression  
 
-Custom weight sets were tuned per position.
+**Ensemble**
+- Custom weights per position  
 
 ---
 
 ## 5. Final Submission
 
-Two full pipelines (v2 and v8) were generated using different ensemble weights.  
-The final competition file was:
+Two versions (v2, v8) were generated using different ensemble weights.  
+The final file was:
 v10 = (v2 + v8) / 2
 
-This achieved the **24.177%** competition score.
+This achieved **24.177%** on the competition leaderboard.
 
 ---
 
 ## 6. File Structure
+```txt
 lol-esports-prediction/
 └── src/
-    └── UpdatedMassiveNumber.R # Full modeling pipeline
+    └── UpdatedMassiveNumber.R   # Full modeling pipeline
 
----
-
-## 7. Run Instructions
-
+7. Run Instructions
 Install required R packages:
-
-```r
 install.packages(c(
   "tidyverse", "pROC", "xgboost",
   "glmnet", "catboost", "lubridate"
@@ -174,73 +158,83 @@ source("src/UpdatedMassiveNumber.R")
 Outputs:
 BIGWIN_v2.csv
 BIGWIN_v8.csv
-BIGWIN_v10t.csv (final submission)
+BIGWIN_v10t.csv   (final submission)
 
-## Why This Project Matters
 
-League of Legends match prediction is much more than a game-related task.  
+Why This Project Matters
+
+League of Legends match prediction is much more than a game-related task.
 This project demonstrates practical, real-world machine learning skills used in modern data science roles.
 
-### 1. Realistic large-scale data complexity
-Professional LoL esports produces thousands of matches and tens of thousands of player–team–champion combinations.  
+1. Realistic large-scale data complexity
+
+Professional LoL esports produces thousands of matches and tens of thousands of player–team–champion combinations.
 This dataset behaves like real sports analytics or financial prediction data, with high dimensionality, temporal variation, and non-linear interactions.
 
-### 2. Full end-to-end ML pipeline
+2. Full end-to-end ML pipeline
+
 This project covers every major ML component in one system:
-- Binary classification (winner)
-- Regression (game length)
-- Multi-output regression (10 player kills)
-- Feature engineering
-- Categorical modeling
-- Time-based modeling and leakage prevention
-- Ensemble blending (logistic + CatBoost + XGBoost + Ridge)
 
-This mirrors actual industry-level machine learning workflows.
+Binary classification (winner)
 
-### 3. Modeling meta changes over time (meta drift)
-League patches change champion balance, game tempo, kill frequency, and strategy every year.  
-To handle this, the model integrates:
-- Year fraction  
-- Expected kills by season  
-- Expected game length by season  
+Regression (game length)
 
-This shows the ability to model **non-stationary data**, a core challenge in real-world ML systems such as finance, forecasting, and recommendations.
+Multi-output regression (10 player kills)
 
-### 4. High-cardinality categorical modeling
-Players, teams, leagues, champions — hundreds of unique categorical values.  
-CatBoost and engineered aggregations allow the model to capture:
-- Player skill history  
-- Team performance consistency  
-- Champion pick/win trends  
-- League differences  
+Feature engineering
 
-High-cardinality categorical modeling is essential in ecommerce, sports analytics, and personalization.
+Categorical modeling
 
-### 5. Industrial relevance
-This modeling structure is the same as what is used in:
-- Esports analytics companies  
-- Sports prediction platforms  
-- Betting probability engines  
-- Game analytics teams (including Riot Games)
+Time-based modeling and leakage prevention
 
-The project demonstrates the ability to build **production-grade predictive systems** on real, evolving data.
+Ensemble blending (Logistic + CatBoost + XGBoost + Ridge)
 
-### 6. Correct time-aware feature construction (no leakage)
-Only past matches before each test date were used for historical statistics.  
-This ensures:
-- Proper chronological separation  
-- Realistic generalization  
-- No future information leakage  
+3. Modeling meta changes over time (meta drift)
 
-Leakage prevention is one of the most important skills in applied machine learning.
+League patches change champion balance, game tempo, kill frequency, and strategy every year.
+The model accounts for this using:
 
----
+Year fraction
 
-### **One-Sentence Summary**
-**This project is a fully engineered, production-style machine learning system that handles temporal drift, high-cardinality data, structured feature engineering, and multi-task prediction—far beyond a simple game model.**
+Expected kills by season
 
+Expected match duration by season
 
-9. Author
+4. High-cardinality categorical modeling
+
+Players, teams, leagues, champions — hundreds of unique categorical values.
+CatBoost and engineered aggregations capture:
+
+Player skill history
+
+Team performance consistency
+
+Champion pick/win trends
+
+League differences
+
+5. Industrial relevance
+
+This modeling structure is identical to what is used in:
+
+Esports analytics companies
+
+Sports prediction platforms
+
+Betting probability engines
+
+Game analytics teams (including Riot Games)
+
+6. Time-aware feature construction (no leakage)
+
+Only past matches before each test date were used.
+This ensures correct chronological separation and prevents future information from leaking into training.
+
+One-Sentence Summary
+
+A production-style machine learning system that handles temporal drift, high-cardinality data, structured feature engineering, and multi-task prediction—far beyond a simple game model.
+
+8. Author
 
 Dahyeon Choi
 Data Science, Simon Fraser University
